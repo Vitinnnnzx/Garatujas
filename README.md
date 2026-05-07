@@ -50,5 +50,5 @@ Bun watch --
         return new Response(`Recurso com id ${id} deletado`, { status: 200 });
       }
     }
-    ```
-    ---
+```
+---
