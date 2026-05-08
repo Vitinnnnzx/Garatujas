@@ -1,60 +1,60 @@
 
 *CORE.TS*
 ```typescript
-const jsonFilePath = __dirname + '/data.temp.json'; 
-const list: string[] = await loadFromFile();
+const jsonFilePath = __dirname + '/data.temp.json'; //??
+const list: string[] = await loadFromFile(); // cria um a lista, basicamente um array de string, que depois ??
 
-
+// função assincorna para carregar o que tem na pasta
 async function loadFromFile() {
-  try {
-    const file = Bun.file(jsonFilePath);
-    const content = await file.text();
-    return JSON.parse(content) as string[];
-  } catch (error: any) {
-    if (error.code === 'ENOENT')
-      return [];
-    throw error;
+  try { // tenta fazer, qualquer erro interrompe
+    const file = Bun.file(jsonFilePath); // variavel que pega oque carrega do json
+    const content = await file.text(); // variavel pra pegar o texto que tem na pasta
+    return JSON.parse(content) as string[];  // transforma dados do jsno em string array
+  } catch (error: any) { // se a tentativa der erro, vem aqui
+    if (error.code === 'ENOENT')// se der erro
+      return []; // retorna um array vazio a pasta
+    throw error; // joga o erro
   }
 }
 
-
-async function saveToFile() {
-  try {
-    await Bun.write(jsonFilePath, JSON.stringify(list));
-  } catch (error: any) {
-   throw new Error("Erro ao salvar os dados no arquivo: " + error.message);
+// função assincorna para salvar
+async function saveToFile() { 
+  try { // tenta fazer, qualquer erro interrompe
+    await Bun.write(jsonFilePath, JSON.stringify(list)); // ???
+  } catch (error: any) { // se der erro vem aq
+   throw new Error("Erro ao salvar os dados no arquivo: " + error.message); // joga uma msg de erro
   }
 }
 
-
+//funcao q adiciona itens 
 async function addItem(item: string) {
-  list.push(item);
-  await saveToFile();
+  list.push(item); // adiciona no array o item dado
+  await saveToFile(); // utiliza a funçao pra salvar
 }
 
-
+//funcao para listar os items
 async function getItems() {
-  return list;
+  return list; // so puxa o array
 }
 
-
-async function updateItem(index: number, newItem: string) {
-  if (index < 0 || index >= list.length)
-    throw new Error("Index fora dos limites");
-  list[index] = newItem;
-  await saveToFile();
+// funçao para dar update , puxa o index e o valor
+async function updateItem(index: number, newItem: string) { 
+  if (index < 0 || index >= list.length) // se o index for menor q 0 ou maior q o numero do array
+    throw new Error("Index fora dos limites"); // joga uma msg de erro de index
+  list[index] = newItem; // // substitui dentro do array o valor no index indicado
+  await saveToFile(); // salva ne
 }
 
-
+// funçao que remove/ deleta, puxa o index so
 async function removeItem(index: number) {
-  if (index < 0 || index >= list.length)
-    throw new Error("Index fora dos limites");
-  list.splice(index, 1);
-  await saveToFile();
+  if (index < 0 || index >= list.length) // se o index for menor q 0 ou maior q o numero do array
+    throw new Error("Index fora dos limites");  // joga uma msg de erro de index
+  list.splice(index, 1); // deleta o item do index indicado
+  await saveToFile(); // salva ne
 }
 
 
-export default { addItem, getItems, updateItem, removeItem };
+export default { addItem, getItems, updateItem, removeItem }; // exporta para fora as funções 
 ```
 
 ---
@@ -63,19 +63,21 @@ export default { addItem, getItems, updateItem, removeItem };
 ```typescript
 import todo from "./core.ts"; // pega as function do core
 
-const server = Bun.serve({ // iniciliza o servidor
+// iniciliza o servidor
+const server = Bun.serve({ 
   port: 3000, // determina a porta, pensando q o server é um predio, a port é o andar
 
-  routes: { //abre a rotas que cada metodo utilizara
-    "/": new Response(Bun.file("./public/index.html")), // rota pra puxar o html 
-
-    "/api/todo": { //rota
+  //abre a rotas que cada metodo utilizara
+  routes: { 
+    "/": new Response(Bun.file("./public/index.html")), // rota pra puxar o html !fixo!
+      //path
+    "/api/todo": { 
       GET: async () => { // arrow function assincrona para "listar"
         const items = await todo.getItems() // variavel q espera realizar o getitems( que veio do core.ts 
         return Response.json(items) // retorna o valor que pego no json
       },
-
-      POST: async (req) => { // arrow function assincrona que pega a req
+      // arrow function assincrona que pega a req
+      POST: async (req) => { 
         const data = await req.json() as any; // variavel que espera e tranforma o valor dado em json
         const item = data.item || null; // tranforma o valor em string 
         if (!item) // verifca se esse dado é um item
@@ -84,8 +86,8 @@ const server = Bun.serve({ // iniciliza o servidor
         return Response.json(data); //retorna o valor para o json
       },
     },
-
-    "/api/todo/:index": { // rota com index q qr listar  ou deletar
+    // path apos rota com index q qr listar  ou deletar
+    "/api/todo/:index": { 
       PUT: async (req) => { arrow function assincrona que updt a req
         const index = parseInt(req.params.index); // ???
         if (isNaN(index)) // verifca se o valor é um numero
@@ -101,8 +103,8 @@ const server = Bun.serve({ // iniciliza o servidor
           return Response.json(error.message, { status: 400 }); // retorna um erro, pq o usuariio é tanso
         }
       },
-
-      DELETE: async (req) => { arrow function assincrona que delete a req
+      //arrow function assincrona que delete a req
+      DELETE: async (req) => { 
         const index = parseInt(req.params.index); //???
         if (isNaN(index)) // verifca se o valor é um numero
           return Response.json('Índice inválido.', { status: 400 }); //se n for retorna erro 
@@ -115,8 +117,8 @@ const server = Bun.serve({ // iniciliza o servidor
       },
     },
   },
-
-  async fetch(req) { // se nd der certo vem aq
+  // se nd der certo vem aq
+  async fetch(req) { 
     return new Response(`Not Found`, { status: 404 });  // retorna um erro pq n acho
   },
 });
