@@ -1,8 +1,8 @@
-
+# Comentarios a partir de codigo feito em sala | Objetivo: realmente descrever e ver se entendeu o codigo 
 ### *CORE.TS*
 ```typescript
 const jsonFilePath = __dirname + '/data.temp.json'; //pega o diretorio do arquivo, a loc exata dele e a a parte do json
-const list: string[] = await loadFromFile(); // cria um a lista, basicamente um array de string, que depois ??
+const list: string[] = await loadFromFile(); // cria um a lista, basicamente um array de string, que depois faz a funçao de carregar
 // função assincorna para carregar o que tem na pasta
 async function loadFromFile() {
   try { // tenta fazer, qualquer erro interrompe
@@ -18,7 +18,7 @@ async function loadFromFile() {
 // função assincorna para salvar
 async function saveToFile() { 
   try { // tenta fazer, qualquer erro interrompe
-    await Bun.write(jsonFilePath, JSON.stringify(list)); // ???
+    await Bun.write(jsonFilePath, JSON.stringify(list)); // dentro da pasta determinada, transforma  o que tem em lista, do json, em string
   } catch (error: any) { // se der erro vem aq
    throw new Error("Erro ao salvar os dados no arquivo: " + error.message); // joga uma msg de erro
   }
