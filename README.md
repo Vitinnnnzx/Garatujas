@@ -9,7 +9,8 @@ Linux/codespace:
 curl -fsSL https://bun.sh/install | bash
 
 Bun init
-Bun watch --
+Bun watch--
+
  ---
 
 # Exemplo Api Basic
