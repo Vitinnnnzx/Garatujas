@@ -1,9 +1,8 @@
 
-*CORE.TS*
+### *CORE.TS*
 ```typescript
-const jsonFilePath = __dirname + '/data.temp.json'; //??
+const jsonFilePath = __dirname + '/data.temp.json'; //pega o diretorio do arquivo, a loc exata dele e a a parte do json
 const list: string[] = await loadFromFile(); // cria um a lista, basicamente um array de string, que depois ??
-
 // função assincorna para carregar o que tem na pasta
 async function loadFromFile() {
   try { // tenta fazer, qualquer erro interrompe
@@ -16,7 +15,6 @@ async function loadFromFile() {
     throw error; // joga o erro
   }
 }
-
 // função assincorna para salvar
 async function saveToFile() { 
   try { // tenta fazer, qualquer erro interrompe
@@ -25,18 +23,15 @@ async function saveToFile() {
    throw new Error("Erro ao salvar os dados no arquivo: " + error.message); // joga uma msg de erro
   }
 }
-
 //funcao q adiciona itens 
 async function addItem(item: string) {
   list.push(item); // adiciona no array o item dado
   await saveToFile(); // utiliza a funçao pra salvar
 }
-
 //funcao para listar os items
 async function getItems() {
   return list; // so puxa o array
 }
-
 // funçao para dar update , puxa o index e o valor
 async function updateItem(index: number, newItem: string) { 
   if (index < 0 || index >= list.length) // se o index for menor q 0 ou maior q o numero do array
@@ -44,7 +39,6 @@ async function updateItem(index: number, newItem: string) {
   list[index] = newItem; // // substitui dentro do array o valor no index indicado
   await saveToFile(); // salva ne
 }
-
 // funçao que remove/ deleta, puxa o index so
 async function removeItem(index: number) {
   if (index < 0 || index >= list.length) // se o index for menor q 0 ou maior q o numero do array
@@ -53,13 +47,12 @@ async function removeItem(index: number) {
   await saveToFile(); // salva ne
 }
 
-
 export default { addItem, getItems, updateItem, removeItem }; // exporta para fora as funções 
 ```
 
 ---
 
-*API*
+### *API*
 ```typescript
 import todo from "./core.ts"; // pega as function do core
 
@@ -89,7 +82,7 @@ const server = Bun.serve({
     // path apos rota com index q qr listar  ou deletar
     "/api/todo/:index": { 
       PUT: async (req) => { arrow function assincrona que updt a req
-        const index = parseInt(req.params.index); // ???
+        const index = parseInt(req.params.index); // transforma oque estiver no index, que esta como string, e "tenta" tranforma em numero inteiro
         if (isNaN(index)) // verifca se o valor é um numero
           return Response.json('Índice inválido. um número inteiro é esperado.', { status: 400 }); // se n for retorna erro
         const data = await req.json() as any; / variavel que espera e tranforma o valor dado em json
@@ -105,7 +98,7 @@ const server = Bun.serve({
       },
       //arrow function assincrona que delete a req
       DELETE: async (req) => { 
-        const index = parseInt(req.params.index); //???
+        const index = parseInt(req.params.index); // transforma oque estiver no index, que esta como string, e "tenta" tranforma em numero inteiro
         if (isNaN(index)) // verifca se o valor é um numero
           return Response.json('Índice inválido.', { status: 400 }); //se n for retorna erro 
         try { // tenta
